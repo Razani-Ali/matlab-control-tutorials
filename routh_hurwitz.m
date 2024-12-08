@@ -24,8 +24,13 @@ function rh_table = routh_hurwitz(coeffs)
     end
 
     % Compute the rest of the table
+    k = cols;
     for i = 3:rows
-        for j = 1:cols - 1
+        ind = n - i + 1; % Current polynomial order
+        if mod(ind, 2) == 1
+            k = k - 1;
+        end
+        for j = 1:k
             % Formula:
             % (two up one right) - (two up first column) * (one up one right) / (one up first column)
             denominator = rh_table(i - 1, 1);
@@ -38,7 +43,6 @@ function rh_table = routh_hurwitz(coeffs)
 
         % Check if the current row is all zeros
         if all(rh_table(i, :) == 0)
-            ind = n - i + 1; % Current polynomial order
             mul = ind + 1:-2:0;
             rem = cols - length(mul) + 1; % Remaining columns to fill
             mul = [mul, zeros(1, rem)]; % Multiplication factors
